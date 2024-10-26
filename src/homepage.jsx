@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import Card from "./card";
 import "./homepage.css";
 import profilePic from "./Images/pfp.jpg";
@@ -35,8 +34,15 @@ import gallery1 from "./Images/1.png";
 import gallery2 from "./Images/2.png";
 import resume from "./Images/resume.png";
 
+import React, { useState, useEffect, useCallback } from 'react';
+
 function ImageCarousel({ images = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Use useCallback to memoize handleNext and avoid unnecessary re-creation
+  const handleNext = useCallback(() => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  }, [images.length]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -44,11 +50,7 @@ function ImageCarousel({ images = [] }) {
     }, 3000); // Change image every 3 seconds
 
     return () => clearInterval(interval);
-  }, [currentIndex]);
-
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
+  }, [handleNext]); // Include handleNext in the dependency array
 
   // Add a fallback if images are empty
   if (images.length === 0) {
@@ -73,6 +75,8 @@ function ImageCarousel({ images = [] }) {
     </div>
   );
 }
+
+
 
 // ProjectCard Component for reusability
 function ProjectCard({ title, content }) {
